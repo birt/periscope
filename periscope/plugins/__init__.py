@@ -31,7 +31,7 @@ from SubDivX import SubDivX
 #from SubScene import SubScene
 
 # Don't want to be included
-#from Addic7ed import Addic7ed
+from Addic7ed import Addic7ed
 #from TvSubtitles import TvSubtitles
 
 # API not working

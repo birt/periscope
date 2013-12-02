@@ -60,7 +60,8 @@ class Addic7ed(SubtitleDatabase.SubtitleDB):
 		super(Addic7ed, self).__init__(langs=None,revertlangs=LANGUAGES)
 		#http://www.addic7ed.com/serie/Smallville/9/11/Absolute_Justice
 		self.host = "http://www.addic7ed.com"
-		self.release_pattern = re.compile(" \nVersion (.+), ([0-9]+).([0-9])+ MBs")
+		self.release_pattern = re.compile("Version (.+), ([0-9]+).([0-9])+ MBs")
+		logging.debug("Addic7ed plugin initialized")
 		
 
 	def process(self, filepath, langs):
@@ -68,8 +69,10 @@ class Addic7ed(SubtitleDatabase.SubtitleDB):
 		languages and it will query the subtitles source '''
 		fname = unicode(self.getFileName(filepath).lower())
 		guessedData = self.guessFileData(fname)
+		#logging.debug("Guessed data type: " + guessedData['type'])
 		if guessedData['type'] == 'tvshow':
 			subs = self.query(guessedData['name'], guessedData['season'], guessedData['episode'], guessedData['teams'], langs)
+#			logging.debug(guessedData['teams'])
 			return subs
 		else:
 			return []
@@ -95,8 +98,11 @@ class Addic7ed(SubtitleDatabase.SubtitleDB):
 		content = content.replace("The safer, easier way", "The safer, easier way \" />")
 		
 		soup = BeautifulSoup(content)
+		#logging.debug(soup)
 		for subs in soup("td", {"class":"NewsTitle", "colspan" : "3"}):
+			#logging.debug(soup)
 			if not self.release_pattern.match(str(subs.contents[1])):
+				logging.debug("No match found for: " + subs.contents[1])
 				continue
 			subteams = self.release_pattern.match(str(subs.contents[1])).groups()[0].lower()
 			
@@ -111,17 +117,19 @@ class Addic7ed(SubtitleDatabase.SubtitleDB):
 			logging.debug("[Addic7ed] Team from file: %s" %teams)
 			logging.debug("[Addic7ed] match ? %s" %subteams.issubset(teams))
 			langs_html = subs.findNext("td", {"class" : "language"})
+			#logging.debug(langs_html)
+			#logging.debug("[Addic7ed] Languages found: " + ','.join(langs_html))
 			lang = self.getLG(langs_html.contents[0].strip().replace('&nbsp;', ''))
 			#logging.debug("[Addic7ed] Language : %s - lang : %s" %(langs_html, lang))
 			
 			statusTD = langs_html.findNext("td")
-			status = statusTD.find("strong").string.strip()
+			status = statusTD.find("b").string.strip()
 
 			# take the last one (most updated if it exists)
 			links = statusTD.findNext("td").findAll("a")
 			link = "%s%s"%(self.host,links[len(links)-1]["href"])
 			
-			#logging.debug("%s - match : %s - lang : %s" %(status == "Completed", subteams.issubset(teams), (not langs or lang in langs)))
+			logging.debug("%s - match : %s - lang : %s" %(status == "Completed", subteams.issubset(teams), (not langs or lang in langs)))
 			if status == "Completed" and subteams.issubset(teams) and (not langs or lang in langs) :
 				result = {}
 				result["release"] = "%s.S%.2dE%.2d.%s" %(name.replace("_", ".").title(), int(season), int(episode), '.'.join(subteams)
