@@ -42,6 +42,7 @@ def main():
     parser.add_option("-i", "--interactive", action="store_true", dest="interactive", help="ask which subtitle to download")
     parser.add_option("-q", "--query", action="append", dest="queries", help="query to send to the subtitles website")
     parser.add_option("--lang-in-name", action="store_true", dest='lang_in_name', help="append lang to subtitle filename")
+    parser.add_option("--subtitles-folder", action="store", type="string", dest="subtitles_folder", help="location of folder to save subtitles in")
     parser.add_option("--cache-folder", action="store", type="string", dest="cache_folder", help="location of the periscope cache/config folder (default is ~/.config/periscope)")
     parser.add_option("--list-plugins", action="store_true", dest="show_plugins", help="list all plugins supported by periscope")
     parser.add_option("--list-active-plugins", action="store_true", dest="show_active_plugins", help="list all plugins used to search subtitles (a subset of all the supported plugins)")
@@ -117,6 +118,13 @@ def main():
             new_name = "%s.%s%s" % (os.path.splitext(s['subtitlepath'])[0], s['lang'], os.path.splitext(s['subtitlepath'])[1])
             shutil.move(s['subtitlepath'], new_name)
             s['subtitlepath'] = new_name
+
+    if options.subtitles_folder:
+	for s in subs:
+	    new_path = "%s%s" % (options.subtitles_folder, os.path.basename(s['subtitlepath']))
+	    log.debug("New path: " + new_path)
+	    shutil.move(s['subtitlepath'], new_path)
+	    s['subtitlepath'] = new_path
 
     log.info("*"*50)
     log.info("Downloaded %s subtitles" %len(subs))
