@@ -206,24 +206,24 @@ class Periscope:
 
         return None #Could not find subtitles
 
-    def downloadSubtitle(self, filename, langs=None, interactive=False):
+    def downloadSubtitle(self, filename, langs=None, interactive=False,subtitles_folder=None):
         ''' Takes a filename and a language and creates ONE subtitle through plugins if interactive == True asks before downloading'''
         subtitles = self.listSubtitles(filename, langs)
         if subtitles:
             log.debug("All subtitles: ")
             log.debug(subtitles)    
-            return self.attemptDownloadSubtitle(subtitles, langs, interactive)
+            return self.attemptDownloadSubtitle(subtitles, langs, interactive, subtitles_folder)
         else:
             return None
         
         
-    def attemptDownloadSubtitle(self, subtitles, langs, interactive=False):
+    def attemptDownloadSubtitle(self, subtitles, langs, interactive=False, subtitles_folder=None):
         subtitle = self.selectBestSubtitle(subtitles, langs, interactive)
         if subtitle:
             log.info("Trying to download subtitle: %s" %subtitle['link'])
             #Download the subtitle
             try:
-                subpath = subtitle["plugin"].createFile(subtitle)
+                subpath = subtitle["plugin"].createFile(subtitle,subtitles_folder)
                 if subpath:
                     subtitle["subtitlepath"] = subpath
                     return subtitle

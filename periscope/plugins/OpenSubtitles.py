@@ -99,7 +99,7 @@ class OpenSubtitles(SubtitleDatabase.SubtitleDB):
             fname = self.getFileName(filepath)
             return self.query(langs=langs, filename=fname)
         
-    def createFile(self, subtitle):
+    def createFile(self, subtitle,subtitles_folder):
         '''pass the URL of the sub and the file it matches, will unzip it
         and return the path to the created file'''
         suburl = subtitle["link"]

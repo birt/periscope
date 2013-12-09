@@ -71,8 +71,7 @@ def main():
                 exit()
             options.cache_folder = os.path.join(home, ".config", "periscope")
 
-
-    periscope_client = periscope.Periscope(options.cache_folder)
+	periscope_client = periscope.Periscope(options.cache_folder)
 
     if options.show_active_plugins:
         print "Active plugins: "
@@ -104,7 +103,7 @@ def main():
             langs = periscope_client.preferedLanguages
         else:
             langs = options.langs
-        sub = periscope_client.downloadSubtitle(arg, langs, options.interactive)
+        sub = periscope_client.downloadSubtitle(arg, langs, options.interactive,options.subtitles_folder)
         if sub:
             subs.append(sub)
 
@@ -125,6 +124,8 @@ def main():
 	    log.debug("New path: " + new_path)
 	    shutil.move(s['subtitlepath'], new_path)
 	    s['subtitlepath'] = new_path
+    else:
+	options.subtitles_folder = '.'
 
     log.info("*"*50)
     log.info("Downloaded %s subtitles" %len(subs))
