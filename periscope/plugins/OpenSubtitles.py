@@ -105,6 +105,8 @@ class OpenSubtitles(SubtitleDatabase.SubtitleDB):
         suburl = subtitle["link"]
         videofilename = subtitle["filename"]
         srtbasefilename = videofilename.rsplit(".", 1)[0]
+	if subtitles_folder:
+	    srtbasefilename = subtitles_folder + os.path.basename(subtitle["filename"])
         self.downloadFile(suburl, srtbasefilename + ".srt.gz")
         f = gzip.open(srtbasefilename+".srt.gz")
         dump = open(srtbasefilename+".srt", "wb")

@@ -122,12 +122,14 @@ class SubtitleSource(SubtitleDatabase.SubtitleDB):
         return sublinks
 
             
-    def createFile(self, subtitle):
+    def createFile(self, subtitle,subtitles_folder):
         '''pass the URL of the sub and the file it matches, will unzip it
         and return the path to the created file'''
         suburl = subtitle["link"]
         videofilename = subtitle["filename"]
         srtfilename = videofilename.rsplit(".", 1)[0] + '.srt'
+	if subtitles_folder:
+            srtfilename = subtitles_folder + os.path.basename(subtitle["filename"])
         self.downloadFile(suburl, srtfilename)
         return srtfilename
 

@@ -153,12 +153,14 @@ class LegendasTV(SubtitleDatabase.SubtitleDB):
         request = urllib2.Request(self.url+'/login_verificar.php',login_data)
         response = urllib2.urlopen(request).read()
 
-    def createFile(self, subtitle):
+    def createFile(self, subtitle,subtitles_folder):
         '''pass the ID of the sub and the file it matches, will unzip it
         and return the path to the created file'''
         suburl = subtitle["link"]
         videofilename = subtitle["filename"]
         srtfilename = videofilename.rsplit(".", 1)[0] + '.srt'
+	if subtitles_folder:
+	    srtbasefilename = subtitles_folder + os.path.basename(subtitle["filename"])
         self.downloadFile(suburl, srtfilename)
         return srtfilename
 

@@ -121,7 +121,7 @@ class SubDivX(SubtitleDatabase.SubtitleDB):
         sorted_links = sorted(sublinks, key=lambda k: k['rating'], reverse=True)
         return sorted_links
 
-    def createFile(self, subtitle):
+    def createFile(self, subtitle,subtitles_folder):
         '''Download and extract subtitle.
 
         Pass the URL of the sub and the file it matches, will unzip it
@@ -146,6 +146,8 @@ class SubDivX(SubtitleDatabase.SubtitleDB):
             video_filename = os.path.basename(subtitle["filename"])
             base_filename, _ = os.path.splitext(video_filename)
             base_rar_filename, _ = os.path.splitext(subtitle["filename"])
+	    if subtitles_folder:
+                base_rar_filename = subtitles_folder + base_rar_filename
             rar_filename = '%s%s' % (base_rar_filename, '.rar')
             self.downloadFile(download_url, rar_filename)
 
