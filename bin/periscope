@@ -150,7 +150,8 @@ def recursive_search(entry, options):
         if mimetype in SUPPORTED_FORMATS:
             # Add it to the list only if there is not already one (or forced)
             basepath = os.path.splitext(entry)[0]
-            if options.force_download or not (os.path.exists(basepath+'.srt') or os.path.exists(basepath + '.sub')):
+#	    print "****************" + options.subtitles_folder + '/' + os.path.basename(entry) + '.srt'
+            if options.force_download or not (os.path.exists(basepath+'.srt') or os.path.exists(basepath + '.sub') or os.path.exists(options.subtitles_folder + '/' + os.path.basename(entry) + '.srt' )):
                 files.append(os.path.normpath(entry))
             else:
                 log.info("Skipping file %s as it already has a subtitle. Use the --force option to force the download" % entry)
